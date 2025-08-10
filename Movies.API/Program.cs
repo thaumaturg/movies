@@ -1,5 +1,6 @@
 using Movies.API.Data;
 using Microsoft.EntityFrameworkCore;
+using Movies.API.Mappings;
 
 namespace Movies.API;
 
@@ -19,6 +20,8 @@ public class Program
             ?? throw new InvalidOperationException("Configuration section" + "'OMDbConfiguration' not found.");
 
         builder.Services.Configure<OmdbConfiguration>(omdbConfiguration);
+
+        builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 
         // Add services to the container.
 
