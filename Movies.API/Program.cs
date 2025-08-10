@@ -15,7 +15,10 @@ public class Program
         builder.Services.AddDbContext<MoviesDbContext>(options =>
             options.UseNpgsql(connectionString).UseSnakeCaseNamingConvention());
 
-        builder.Services.Configure<OmdbConfiguration>(builder.Configuration.GetSection("OMDbConfiguration"));
+        var omdbConfiguration = builder.Configuration.GetSection("OMDbConfiguration")
+            ?? throw new InvalidOperationException("Configuration section" + "'OMDbConfiguration' not found.");
+
+        builder.Services.Configure<OmdbConfiguration>(omdbConfiguration);
 
         // Add services to the container.
 
