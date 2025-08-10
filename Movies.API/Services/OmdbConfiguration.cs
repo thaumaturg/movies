@@ -1,6 +1,6 @@
-﻿namespace Movies.API.Data;
+﻿namespace Movies.API.Services;
 
 public class OmdbConfiguration
 {
-    public required string ApiKey { get; set; }
+    public string ApiKey { get; set; } = string.Empty;
 }

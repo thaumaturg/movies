@@ -1,6 +1,7 @@
 using Movies.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Movies.API.Mappings;
+using Movies.API.Services;
 
 namespace Movies.API;
 
