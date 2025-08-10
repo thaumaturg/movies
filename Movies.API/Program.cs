@@ -1,3 +1,5 @@
+using Movies.API.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Movies.API
 {
@@ -6,6 +8,12 @@ namespace Movies.API
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            var connectionString = builder.Configuration.GetConnectionString("MoviesDb")
+                ?? throw new InvalidOperationException("Connection string" + "'MoviesDb' not found.");
+
+            builder.Services.AddDbContext<MoviesDbContext>(options =>
+                options.UseNpgsql(connectionString).UseSnakeCaseNamingConvention());
 
             // Add services to the container.
 
