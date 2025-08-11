@@ -7,13 +7,13 @@
     <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
         <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Movie Search</h1>
 
-        <div class="flex flex-col md:flex-row gap-4 mb-4">
+        <form @onsubmit="OnFormSubmit" @onsubmit:preventDefault="true" class="flex flex-col md:flex-row gap-4 mb-4">
             <div class="flex-1">
-                <input @bind="searchTerm" @onkeypress="OnKeyPress"
+                <input @bind="searchTerm" @onkeydown="OnKeyDown" @bind:event="oninput"
                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-lg"
                        placeholder="Enter movie title..." />
             </div>
-            <button @onclick="SearchMovies" disabled="@isLoading"
+            <button type="submit" disabled="@isLoading"
                     class="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed font-semibold transition-colors">
                 @if (isLoading)
                 {
@@ -30,7 +30,7 @@
                     <span>Search</span>
                 }
             </button>
-        </div>
+        </form>
 
         @if (searchHistory != null && searchHistory.Any())
         {
@@ -204,9 +204,17 @@
         StateHasChanged();
     }
 
-    private async Task OnKeyPress(KeyboardEventArgs e)
+    private async Task OnKeyDown(KeyboardEventArgs e)
     {
-        if (e.Key == "Enter")
+        if (e.Key == "Enter" && !isLoading)
+        {
+            await SearchMovies();
+        }
+    }
+
+    private async Task OnFormSubmit()
+    {
+        if (!isLoading)
         {
             await SearchMovies();
         }
