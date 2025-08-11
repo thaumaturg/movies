@@ -2,6 +2,7 @@ using Movies.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Movies.API.Mappings;
 using Movies.API.Services;
+using Movies.API.Repositories;
 
 namespace Movies.API;
 
@@ -23,6 +24,10 @@ public class Program
         builder.Services.Configure<OmdbConfiguration>(omdbConfiguration);
 
         builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
+        builder.Services.AddHttpClient();
+
+        builder.Services.AddScoped<IMovieSearchRepository, PostgresMovieSearchRepository>();
+        builder.Services.AddScoped<IOmdbService, OmdbService>();
 
         // Add services to the container.
 
