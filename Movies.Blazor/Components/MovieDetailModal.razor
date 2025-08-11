@@ -1,0 +1,208 @@
+@using Movies.Blazor.Models
+@inject IJSRuntime JSRuntime
+
+<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50" @onclick="CloseOnBackdrop">
+    <div class="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto" @onclick:stopPropagation="true">
+        <div class="flex justify-between items-center p-6 border-b">
+            <h2 class="text-2xl font-bold text-gray-800">@Movie.Title</h2>
+            <button @onclick="OnClose" class="text-gray-400 hover:text-gray-600 text-2xl font-bold">
+                &times;
+            </button>
+        </div>
+
+        <div class="p-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-1">
+                    @if (!string.IsNullOrEmpty(Movie.Poster) && Movie.Poster != "N/A")
+                    {
+                        <img src="@Movie.Poster" alt="@Movie.Title"
+                             class="w-full rounded-lg shadow-lg" />
+                    }
+                    else
+                    {
+                        <div class="w-full h-96 bg-gray-300 rounded-lg flex items-center justify-center">
+                            <span class="text-gray-500">No Image Available</span>
+                        </div>
+                    }
+                </div>
+
+                <div class="lg:col-span-2 space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <h3 class="font-semibold text-gray-700">Year</h3>
+                            <p class="text-gray-600">@Movie.Year</p>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-700">Rated</h3>
+                            <p class="text-gray-600">@(string.IsNullOrEmpty(Movie.Rated) || Movie.Rated == "N/A" ? "Not Rated" : Movie.Rated)</p>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-700">Runtime</h3>
+                            <p class="text-gray-600">@(string.IsNullOrEmpty(Movie.Runtime) || Movie.Runtime == "N/A" ? "Unknown" : Movie.Runtime)</p>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-700">Released</h3>
+                            <p class="text-gray-600">@(string.IsNullOrEmpty(Movie.Released) || Movie.Released == "N/A" ? "Unknown" : Movie.Released)</p>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Movie.Genre) && Movie.Genre != "N/A")
+                    {
+                        <div>
+                            <h3 class="font-semibold text-gray-700 mb-2">Genre</h3>
+                            <div class="flex flex-wrap gap-2">
+                                @foreach (var genre in Movie.Genre.Split(','))
+                                {
+                                    <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">@genre.Trim()</span>
+                                }
+                            </div>
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrEmpty(Movie.Plot) && Movie.Plot != "N/A")
+                    {
+                        <div>
+                            <h3 class="font-semibold text-gray-700 mb-2">Plot</h3>
+                            <p class="text-gray-600 leading-relaxed">@Movie.Plot</p>
+                        </div>
+                    }
+
+                    @if (Movie.Ratings != null && Movie.Ratings.Any())
+                    {
+                        <div>
+                            <h3 class="font-semibold text-gray-700 mb-3">Ratings</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                @foreach (var rating in Movie.Ratings)
+                                {
+                                    <div class="bg-gray-50 p-3 rounded-lg text-center">
+                                        <div class="font-semibold text-lg text-gray-800">@rating.Value</div>
+                                        <div class="text-sm text-gray-600">@rating.Source</div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrEmpty(Movie.ImdbRating) && Movie.ImdbRating != "N/A")
+                    {
+                        <div class="bg-yellow-50 p-4 rounded-lg">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="font-semibold text-gray-700">IMDB Rating</h3>
+                                    <div class="flex items-center">
+                                        <span class="text-2xl font-bold text-yellow-600">@Movie.ImdbRating</span>
+                                        <span class="text-gray-500 ml-1">/10</span>
+                                        @if (!string.IsNullOrEmpty(Movie.ImdbVotes) && Movie.ImdbVotes != "N/A")
+                                        {
+                                            <span class="text-sm text-gray-500 ml-2">(@Movie.ImdbVotes votes)</span>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="text-yellow-500 text-2xl">⭐</div>
+                            </div>
+                        </div>
+                    }
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        @if (!string.IsNullOrEmpty(Movie.Director) && Movie.Director != "N/A")
+                        {
+                            <div>
+                                <h3 class="font-semibold text-gray-700">Director</h3>
+                                <p class="text-gray-600">@Movie.Director</p>
+                            </div>
+                        }
+                        @if (!string.IsNullOrEmpty(Movie.Writer) && Movie.Writer != "N/A")
+                        {
+                            <div>
+                                <h3 class="font-semibold text-gray-700">Writer</h3>
+                                <p class="text-gray-600">@Movie.Writer</p>
+                            </div>
+                        }
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Movie.Actors) && Movie.Actors != "N/A")
+                    {
+                        <div>
+                            <h3 class="font-semibold text-gray-700 mb-2">Cast</h3>
+                            <p class="text-gray-600">@Movie.Actors</p>
+                        </div>
+                    }
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
+                        @if (!string.IsNullOrEmpty(Movie.Language) && Movie.Language != "N/A")
+                        {
+                            <div>
+                                <h3 class="font-semibold text-gray-700">Language</h3>
+                                <p class="text-gray-600">@Movie.Language</p>
+                            </div>
+                        }
+                        @if (!string.IsNullOrEmpty(Movie.Country) && Movie.Country != "N/A")
+                        {
+                            <div>
+                                <h3 class="font-semibold text-gray-700">Country</h3>
+                                <p class="text-gray-600">@Movie.Country</p>
+                            </div>
+                        }
+                        @if (!string.IsNullOrEmpty(Movie.BoxOffice) && Movie.BoxOffice != "N/A")
+                        {
+                            <div>
+                                <h3 class="font-semibold text-gray-700">Box Office</h3>
+                                <p class="text-gray-600">@Movie.BoxOffice</p>
+                            </div>
+                        }
+                        @if (!string.IsNullOrEmpty(Movie.Awards) && Movie.Awards != "N/A")
+                        {
+                            <div>
+                                <h3 class="font-semibold text-gray-700">Awards</h3>
+                                <p class="text-gray-600">@Movie.Awards</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex justify-end p-6 border-t">
+            <button @onclick="OnClose"
+                    class="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
+                Close
+            </button>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public MovieDetailDto Movie { get; set; } = new();
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("eval", "document.body.style.overflow = 'hidden'");
+        }
+    }
+
+    private async Task CloseModal()
+    {
+        await JSRuntime.InvokeVoidAsync("eval", "document.body.style.overflow = 'auto'");
+        await OnClose.InvokeAsync();
+    }
+
+    private async Task CloseOnBackdrop()
+    {
+        await CloseModal();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        try
+        {
+            await JSRuntime.InvokeVoidAsync("eval", "document.body.style.overflow = 'auto'");
+        }
+        catch
+        {
+            // Ignore errors during disposal
+        }
+    }
+}
