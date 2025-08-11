@@ -1,4 +1,4 @@
-namespace Movies.API.Models.Domain.DTO;
+namespace Movies.API.Models.DTO;
 
 public class MovieSearchDto
 {
